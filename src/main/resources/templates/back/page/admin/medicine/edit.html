@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/back/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/back/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <input type="hidden" name="mId" th:value="${medicine.mId}">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">药品名</label>
+        <div class="layui-input-block">
+            <input type="text" name="mName" lay-verify="required" lay-reqtext="药品名称不能为空" placeholder="请输入药品名称" value="" class="layui-input" th:value="${medicine.mName}">
+            <tip>填写需要采购的药品的名称。</tip>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">国家医保</label>
+        <div class="layui-input-block">
+            <select name="meId" lay-filter="aihao" id="ismedical">
+                <th:block th:each="medical:${medical}">
+                    <option th:if="${medical.id == medicine.meId}" selected th:value="${medical.id}" th:text="${medical.medicalInsurance}"></option>
+                    <option th:unless="${medical.id == medicine.meId}" th:value="${medical.id}" th:text="${medical.medicalInsurance}"></option>
+                </th:block>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">包装类型</label>
+        <div class="layui-input-block">
+            <select name="packing">
+                <option th:value="${medicine.packing}" th:text="${medicine.packing}">请选择问题</option>
+                <optgroup label="液体">
+                    <option value="溶液型">溶液型</option>
+                    <option value="胶体型">胶体型</option>
+                    <option value="混悬剂">混悬剂</option>
+                    <option value="乳剂">乳剂</option>
+                </optgroup>
+                <optgroup label="半固体">
+                    <option value="软膏剂">软膏剂</option>
+                    <option value="凝胶剂">凝胶剂</option>
+                    <option value="栓剂">栓剂</option>
+                </optgroup>
+                <optgroup label="固体">
+                    <option value="散剂">散剂</option>
+                    <option value="颗粒剂">颗粒剂</option>
+                    <option value="片剂">片剂</option>
+                    <option value="胶囊剂">胶囊剂</option>
+                    <option value="丸剂">丸剂</option>
+                    <option value="膜剂">膜剂</option>
+                </optgroup>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label required">药效</label>
+        <div class="layui-input-block">
+            <textarea name="efficacy" class="layui-textarea" th:text="${medicine.efficacy}"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">服用频率</label>
+        <div class="layui-input-block">
+            <input type="text" name="frequency" placeholder="服用频率" value="" class="layui-input" th:value="${medicine.frequency}">
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{/back/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("修改成功", {
+                title: '提示信息'
+            }, function () {
+
+                $.ajax({
+                    type: "POST",
+                    url: "../medicine/update",
+                    data:data.field,
+                    success:function (result) {
+                        if (result.code === 0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                            // 刷新父页面
+                            window.parent.location.reload();
+                        }
+                    }
+                })
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

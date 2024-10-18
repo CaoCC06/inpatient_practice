@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/back/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/back/css/public.css}" media="all">
+
+    <link rel="stylesheet" th:href="@{/client/css/bootstrap.css}">
+    <script th:src="@{/client/js/bootstrap.min.js}"></script>
+    <style>
+        a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="layuimini-container">
+    <div class="layui-bg-gray" style="padding: 16px;">
+        <div class="layui-row layui-col-space15">
+            <div class="layui-col-md2" th:each="patient:${patientAndMedicineList.list}">
+                <form class="layui-form layui-form-pane" action="">
+                    <a href="javascript:;" class="layui-card" lay-event="edit" id="edit">
+                        <input type="hidden" th:value="${patient.pId}" id="pId" name="pId"/>
+                        <div class="layui-card" style="height: 300px;overflow: hidden">
+                            <div class="layui-card-header">
+                                <span th:text="${patient.pName}" style=""></span>
+                            </div>
+                            <div class="layui-card-body">
+                                <div class="layui-btn-container tag"  lay-filter="demo" th:each="medicine:${patient.medicines}">
+                                    <button lay-id="11" type="button" class="tag-item"  th:id="${medicine.id}" th:text="${medicine.mName}"></button>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </form>
+            </div>
+
+            <!-- 分页信息 -->
+            <div class="layui-col-md12">
+                <div th:replace="/back/page/common/medicine/paging::pageNav(${patientAndMedicineList},'上一页','下一页','page')" />
+            </div>
+        </div>
+    </div>
+</div>
+<script th:src="@{/back/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script>
+    //config的设置是全局的
+    layui.config({
+        base: '../../../modules/' //假设这是你存放拓展模块的根目录
+    }).extend({ //设定模块别名
+        tag: '../lib/modules/tag' //如果 tag.js 是在根目录，也可以不用设定别名
+    }).use('tag', function () {
+        var $ = layui.jquery
+            , tag = layui.tag; //Tag的切换功能，切换事件监听等，需要依赖tag模块
+
+        //全局设置
+        /*tag.set({
+          likeHref: 'modules/tag.css', //tag.css所在的路径
+          skin: 'layui-btn layui-btn-primary layui-btn-sm layui-btn-radius',//标签样式
+          tagText: '添加标签' //标签添加按钮提示文本
+        });*/
+
+        //指定渲染 lay-filter="test" 圆角风格的TAG
+        tag.render("test", {
+            skin: 'layui-btn layui-btn-primary layui-btn-sm layui-btn-radius',//标签样式
+            tagText: '<i class="layui-icon layui-icon-add-1"></i>添加标签' //标签添加按钮提示文本
+        });
+
+        $('.site-demo-active').on('click', function () {
+            var othis = $(this), type = othis.data('type');
+            active[type] ? active[type].call(this, othis) : '';
+        });
+
+        tag.on('click(demo)', function (data) {
+            console.log(this.id); //当前Tag标签所在的原始DOM元素
+            var index = layer.open({
+                title: '分配药品',
+                type: 2,
+                shade: 0.2,
+                maxmin:true,
+                shadeClose: true,
+                area: ['30%', '30%'],
+                content: '../patient/patientM2.html?pid='+this.id,
+            });
+            $(window).on("resize", function () {
+                layer.full(index);
+            });
+            return false;
+        });
+    });
+</script>
+</body>
+</html>

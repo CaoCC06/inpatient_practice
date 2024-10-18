@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+<nav aria-label="Page navigation example">
+    <ul class="pagination" th:fragment="pageNav(pageInfo, prevText, nextText, prefix)">
+        <th:block th:if="${pageInfo.hasPreviousPage}">
+            <li class="page-item">
+                <a class="page-link" th:href="@{'/'+${prefix}+'/'+${pageInfo.prePage}}" aria-label="Previous" th:text="${prevText}">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        </th:block>
+        <th:block th:each="navIndex :${ pageInfo.navigatepageNums}">
+            <th:block th:if="${pageInfo.pages} <= 5">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{'/page/'+${navIndex}}" th:text="${navIndex}"></a>
+                </li>
+            </th:block>
+            <th:block th:if="${pageInfo.pages} > 5">
+                <li class="page-item" th:if="${pageInfo.pageNum <=3 &&  navIndex <= 5}">
+                    <a class="page-link" th:href="@{'/page/'+${navIndex}}" th:text="${navIndex}"></a>
+                </li>
+                <li class="page-item" th:if="${pageInfo.pageNum >= pageInfo.pages-2 &&  navIndex > pageInfo.pages-5}">
+                    <a class="page-link" th:href="@{'/page/'+${navIndex}}" th:text="${navIndex}"></a>
+                </li>
+                <li class="page-item" th:if="${pageInfo.pageNum >=4 && pageInfo.pageNum <= pageInfo.pages-3 &&  navIndex >= pageInfo.pageNum-2 && navIndex <= pageInfo.pageNum+2}">
+                    <a th:href="@{'/page/'+${navIndex}}" th:text="${navIndex}"></a>
+                </li>
+            </th:block>
+        </th:block>
+        <th:block th:if="${pageInfo.hasNextPage}">
+            <li class="page-item">
+                <a class="page-link" th:href="@{'/'+${prefix}+'/'+${pageInfo.nextPage}}" th:text="${nextText}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        </th:block>
+    </ul>
+</nav>
+</body>
+</html>

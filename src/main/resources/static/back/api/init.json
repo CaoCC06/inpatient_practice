@@ -1,0 +1,81 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "back/page/welcome.html"
+  },
+  "logoInfo": {
+    "title": "Inpatient",
+    "image": "back/images/药.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "药品",
+          "href": "",
+          "icon": "fa fa-medkit",
+          "target": "_self",
+          "child": [
+            {
+              "title": "库存管理",
+              "href": "back/page/admin/medicine/list.html",
+              "icon": "fa fa-medkit",
+              "target": "_self"
+            },
+            {
+              "title": "药品图片",
+              "href": "back/page/admin/medicine/medicineP.html",
+              "icon": "fa fa-file-image-o",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "住院管理",
+          "href": "",
+          "icon": "fa fa-user-md",
+          "target": "_self",
+          "child": [
+            {
+              "title": "住院管理",
+              "href": "back/page/admin/patient/list.html",
+              "icon": "fa fa-user-md",
+              "target": "_self"
+            },
+            {
+              "title": "药品分发",
+              "href": "back/page/admin/patient/patient2.html",
+              "icon": "fa fa-user-md",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "病房管理",
+          "href": "",
+          "icon": "fa fa-user-md",
+          "target": "_self",
+          "child": [
+            {
+              "title": "病房管理",
+              "href": "back/page/admin/ward/list.html",
+              "icon": "fa fa-user-md",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "管理员",
+          "href": "back/page/backuser/list.html",
+          "icon": "fa fa-user-md",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}

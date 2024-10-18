@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/back/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/back/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <input type="hidden" name="pId" th:value="${patient.pId}">
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病人姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="pName" lay-verify="required" class="layui-input" th:value="${patient.pName}">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病房号</label>
+        <div class="layui-input-block">
+            <select name="wId" lay-filter="aihao">
+                <th:block th:each="ward:${ward}">
+                    <option th:if="${ward.wId == patient.wId}" selected th:value="${ward.wId}" th:text="${ward.wId}"></option>
+                    <option th:unless="${ward.wId == patient.wId}" th:value="${ward.wId}" th:text="${ward.wId}"></option>
+                </th:block>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病人性别</label>
+        <div class="layui-input-block">
+            <select name="pSex" lay-filter="aihao">
+                <option th:value="${patient.pSex}" th:text="${patient.pSex}"></option>
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label required">病情描述</label>
+        <div class="layui-input-block">
+            <textarea name="symptom" class="layui-textarea" th:value="${patient.symptom}" th:text="${patient.symptom}"></textarea>
+        </div>
+    </div>
+
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{/back/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            var index = layer.alert("修改成功", {
+                title: '提示信息'
+            }, function () {
+
+                $.ajax({
+                    type: "POST",
+                    url: "../patient/update",
+                    data:data.field,
+                    success:function (result) {
+                        if (result.code === 0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                            // 刷新父页面
+                            window.parent.location.reload();
+                        }
+                    }
+                })
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>layui</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/back/lib/layui-v2.6.3/css/layui.css}" media="all">
+    <link rel="stylesheet" th:href="@{/back/css/public.css}" media="all">
+    <style>
+        body {
+            background-color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+<div class="layui-form layuimini-form">
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病人姓名</label>
+        <div class="layui-input-block">
+            <input type="text" name="pName" lay-verify="required" lay-reqtext="病人姓名不能为空" placeholder="请输入病人姓名" value="" class="layui-input">
+            <tip>填写需要入住病房的病人姓名。</tip>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病人性别</label>
+        <div class="layui-input-block">
+            <select name="pSex" lay-filter="aihao">
+                <option value="男">男</option>
+                <option value="女">女</option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病人年龄</label>
+        <div class="layui-input-block">
+            <input type="text" name="pAge" lay-verify="required" lay-reqtext="病人年龄不能为空" placeholder="请输入病人年龄" value="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label required">病房</label>
+        <div class="layui-input-block">
+            <select name="wId" lay-filter="aihao" id="wclassname">
+                <option value=""></option>
+            </select>
+        </div>
+    </div>
+    <div class="layui-form-item layui-form-text">
+        <label class="layui-form-label required">病情描述</label>
+        <div class="layui-input-block">
+            <textarea name="symptom" class="layui-textarea" placeholder="请输入该病人的基本症状"></textarea>
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <div class="layui-input-block">
+            <button class="layui-btn layui-btn-normal" lay-submit lay-filter="saveBtn">确认保存</button>
+        </div>
+    </div>
+</div>
+<script th:src="@{/back/lib/layui-v2.6.3/layui.js}" charset="utf-8"></script>
+<script>
+    layui.use(['form'], function () {
+        var form = layui.form,
+            layer = layui.layer,
+            $ = layui.$;
+    loadwclassname()
+       function loadwclassname(){
+           $.ajax({
+               type: "GET",
+               url:"../ward/all",
+               success:function (result) {
+                   $("#wclassname").empty("");
+                   $("#wclassname").append("<option value=''></option>");
+                   $(result.data).each(function (i,item) {
+                       $("#wclassname").append("<option value='"+item.wid+"'>"+item.wid+"</option>");
+                   })
+                   form.render();
+               }
+           })
+       }
+
+        //监听提交
+        form.on('submit(saveBtn)', function (data) {
+            // var index = layer.alert(JSON.stringify(data.field), {
+            //     title: '最终的提交信息'
+            var index = layer.alert("正在添加", {
+                title: '提示信息'
+            }, function () {
+
+                $.ajax({
+                    type: "POST",
+                    url: "../patient/save",
+                    data:data.field,
+                    success:function (result) {
+                        if (result.code === 0){
+                            // 关闭弹出层
+                            layer.close(index);
+                            var iframeIndex = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(iframeIndex);
+                            // 刷新父页面
+                            window.parent.location.reload();
+                        }
+                        if (result.code === 500){
+                            var index = layer.alert(result.msg, {
+                                title: '提示信息'
+                            })
+                        }
+                    }
+                })
+            });
+
+            return false;
+        });
+
+    });
+</script>
+</body>
+</html>

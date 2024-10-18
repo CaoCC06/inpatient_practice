@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <title>layui</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <link rel="stylesheet" th:href="@{/back/layui/css/layui.css}" media="all">
+</head>
+<body>
+<div class="layui-form layuimini-form">
+  <div class="layui-form-item">
+    <input type="hidden" name="pId" th:value="${patient.pId}">
+  </div>
+  <div class="layui-form-item">
+    <div id="ID-transfer-demo-inst"></div>
+  </div>
+  <div class="layui-form-item">
+    <div class="layui-input-block">
+      <button type="button" class="layui-btn layui-btn-normal" lay-submit  lay-on="getData" lay-filter="saveBtn">确认保存</button>
+    </div>
+  </div>
+</div>
+<script th:src="@{/back/layui/layui.js}" charset="utf-8"></script>
+<script th:src="@{/client/js/jquery-3.5.1.min.js}"></script>
+<script>
+  layui.use(function(){
+    var transfer = layui.transfer;
+    var form = layui.form;
+    var layer = layui.layer;
+    var data = [];
+    var pid = [[${patient.pId}]]
+    var checked = []
+    // console.log(pid)
+    $.ajax({
+      type: "Get",
+      url: "../patient/loadCheckMedicine?pId="+pid,
+      success: function(result) {
+        // console.log(result.data)
+        result.data.forEach(function(item) {
+          checked.push(item.toString())
+        })
+      }
+    })
+
+
+    $.ajax({
+      type: "Get",
+      url: "../patient/loadAllmedicine",
+      success: function(result) {
+        // console.log(result.data)
+        result.data.forEach(function(item) {
+          var allmedicine = {};
+          allmedicine["value"] = item.mid.toString()
+          allmedicine["title"] = item.mname
+          data.push(allmedicine)
+        });
+        // 渲染
+        transfer.render({
+          elem: '#ID-transfer-demo-inst',
+          data: data,
+          id: 'demo-inst',// 定义唯一索引
+          value: checked,
+          showSearch: true
+        });
+      },
+    })
+
+    //监听提交
+    form.on('submit(saveBtn)', function (data) {
+      // var index = layer.alert(JSON.stringify(data.field), {
+      //     title: '最终的提交信息'
+      var index = layer.alert("添加成功", {
+        title: '提示信息'
+      }, function () {
+        transfer.getData('demo-inst').forEach(function(item) {
+          data.field["mId"] = item["value"]
+          // console.log(data.field)
+          var n = 0;
+          checked.forEach(function(item1) {
+            if(item1 === item["value"]){
+              n = 1;
+            }
+          })
+          if (n === 0){
+            $.ajax({
+              type: "POST",
+              url: "../patient/addPatientMedicine",
+              data:data.field,
+              success:function (result) {
+                if (result.code === 0){
+                  // 关闭弹出层
+                  layer.close(index);
+                  var iframeIndex = parent.layer.getFrameIndex(window.name);
+                  parent.layer.close(iframeIndex);
+                  // 刷新父页面
+                  window.parent.location.reload();
+                }
+              }
+            })
+          }
+          // console.log("-------------------------")
+        })
+      });
+
+      return false;
+    });
+  });
+</script>
+</body>
+</html>

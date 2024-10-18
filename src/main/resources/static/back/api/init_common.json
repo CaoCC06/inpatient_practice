@@ -1,0 +1,53 @@
+{
+  "homeInfo": {
+    "title": "首页",
+    "href": "back/page/welcome.html"
+  },
+  "logoInfo": {
+    "title": "Inpatient",
+    "image": "back/images/药.png",
+    "href": ""
+  },
+  "menuInfo": [
+    {
+      "title": "常规管理",
+      "icon": "fa fa-address-book",
+      "href": "",
+      "target": "_self",
+      "child": [
+        {
+          "title": "药品",
+          "href": "back/page/common/medicine/medicineP.html",
+          "icon": "fa fa-medkit",
+          "target": "_self"
+        },
+        {
+          "title": "住院管理",
+          "href": "",
+          "icon": "fa fa-user-md",
+          "target": "_self",
+          "child": [
+            {
+              "title": "住院管理",
+              "href": "back/page/common/patient/list.html",
+              "icon": "fa fa-user-md",
+              "target": "_self"
+            },
+            {
+              "title": "药品分发",
+              "href": "back/page/common/patient/patient2.html",
+              "icon": "fa fa-user-md",
+              "target": "_self"
+            }
+          ]
+        },
+        {
+          "title": "病房管理",
+          "href": "back/page/common/ward/list.html",
+          "icon": "fa fa-user-md",
+          "target": "_self"
+        }
+      ]
+    }
+  ]
+}

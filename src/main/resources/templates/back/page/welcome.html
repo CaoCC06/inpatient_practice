@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>首页</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="../lib/layui-v2.6.3/css/layui.css" media="all">
+    <link rel="stylesheet" href="../lib/font-awesome-4.7.0/css/font-awesome.min.css" media="all">
+    <link rel="stylesheet" href="../css/public.css" media="all">
+    <style>
+        .top-panel {
+            border: 1px solid #eceff9;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .top-panel > .layui-card-body{
+            height: 60px;
+        }
+        .top-panel-number{
+            line-height:60px;
+            font-size: 30px;
+        }
+        .layui-card {border:1px solid #f2f2f2;border-radius:5px;}
+        .welcome-module {width:100%;height:110px;}
+        .layuimini-qiuck-module {text-align:center;margin-top: 10px}
+        .layuimini-qiuck-module a i {display:inline-block;width:100%;height:60px;line-height:60px;text-align:center;border-radius:2px;font-size:30px;background-color:#F8F8F8;color:#333;transition:all .3s;-webkit-transition:all .3s;}
+        .layuimini-qiuck-module a cite {position:relative;top:2px;display:block;color:#666;text-overflow:ellipsis;overflow:hidden;white-space:nowrap;font-size:14px;}
+    </style>
+</head>
+<body>
+<!--<div class="layuimini-container">-->
+<div class="layuimini-main">
+    <div class="layui-col-md12">
+        <div class="layui-card">
+            <div class="layui-card-body">
+                <div class="layui-row layui-col-space15 layuimini-qiuck">
+                    <div class="layui-col-md1">
+                        <img th:src="@{../images/用户.png}" alt="" style="width: 80px;height: 80px">
+                    </div>
+                    <div class="layui-col-md11">
+                        <div class="layui-row">
+                            <h2 id="helloUser" style="color: #0b5ed7"></h2>
+                            <h2 style="font-size: 20px;font-weight: bold;">欢迎使用医院管理系统</h2>
+                        </div>
+                    </div>
+                </div>
+        </div>
+    </div>
+    </div>
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-md4">
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">目前药品总量</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="top-panel-number" th:text="${medicineCount}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card top-panel">
+                <div class="layui-card-header">目前住院人数</div>
+                <div class="layui-card-body">
+                    <div class="layui-row layui-col-space5">
+                        <div class="top-panel-number" th:text="${patientCount}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="layui-col-md4">
+            <div class="layui-card">
+                <div class="layui-card-body">
+                    <div class="welcome-module">
+                        <div class="layui-row layui-col-space15 layuimini-qiuck">
+                            <div class="layui-col-xs3 layuimini-qiuck-module">
+                                <a href="javascript:;" layuimini-content-href="back/page/medicine/list.html" data-title="药品管理" data-icon="fa fa-medkit">
+                                    <i class="fa fa-medkit"></i>
+                                    <cite>药品管理</cite>
+                                </a>
+                            </div>
+                            <div class="layui-col-xs3 layuimini-qiuck-module">
+                                <a href="javascript:;" layuimini-content-href="back/page/backuser/list.html" data-title="用户列表" data-icon="fa fa-gears">
+                                    <i class="fa fa-file-image-o"></i>
+                                    <cite>药品图片</cite>
+                                </a>
+                            </div>
+                            <div class="layui-col-xs3 layuimini-qiuck-module">
+                                <a href="javascript:;" layuimini-content-href="back/page/admin/patient/list.html" data-title="病人管理" data-icon="fa fa-file-text">
+                                    <i class="fa fa-user-md"></i>
+                                    <cite>病人管理</cite>
+                                </a>
+                            </div>
+                            <div class="layui-col-xs3 layuimini-qiuck-module">
+                                <a href="javascript:;" layuimini-content-href="back/page/admin/ward/list.html" data-title="病房管理" data-icon="fa fa-file-text">
+                                    <i class="fa fa-file-text"></i>
+                                    <cite>病房管理</cite>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="layui-row layui-col-space15">
+        <div class="layui-col-xs12 layui-col-md6">
+            <div id="echarts-pie-one" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+        </div>
+        <div class="layui-col-xs12 layui-col-md6">
+            <div id="echarts-pie-two" style="background-color:#ffffff;min-height:400px;padding: 10px"></div>
+        </div>
+    </div>
+</div>
+<!--</div>-->
+<script src="../lib/layui-v2.6.3/layui.js" charset="utf-8"></script>
+<script src="../js/lay-config.js?v=1.0.4" charset="utf-8"></script>
+<script th:src="@{/client/js/jquery-3.5.1.min.js}"></script>
+<script>
+    var medicineInventory = {};
+    var patientWard = [];
+    function loadUserName(){
+        $.ajax({
+            type: "Get",
+            url: "/getuserByContext",
+            success: function(result) {
+                // console.log(result.username)
+                $("#helloUser").text(result.username)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        })
+    }
+    function loadChartDataOne(){
+        $.ajax({
+            type: "Get",
+            url: "/MedicineInventory",
+            success: function(result) {
+                // console.log(result.data)
+                result.data.forEach(function(item) {
+                    medicineInventory[item.meId] = item.inventory
+                    // console.log(item.meId, item.inventory)
+                });
+                // console.log(medicineInventory)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        })
+    }
+
+
+    function loadChartDataTwo(){
+        $.ajax({
+            type: "Get",
+            url: "/PatientWard",
+            success: function(result) {
+                // console.log(result.data)
+                result.data.forEach(function(item) {
+                    var patientWard1 = {};
+                    patientWard1["value"] = item.symptom
+                    patientWard1["name"] = item.wid
+                    patientWard.push(patientWard1)
+                });
+                // console.log(patientWard)
+            },
+            error: function (xhr, status, error) {
+                console.error(error);
+            }
+        })
+    }
+
+    loadChartDataOne()
+    loadChartDataTwo()
+    loadUserName()
+
+    layui.use(['layer', 'echarts'], function () {
+        var $ = layui.jquery,
+            layer = layui.layer,
+            echarts = layui.echarts;
+
+
+
+
+        /**
+         * 玫瑰图表
+         */
+        var echartsPieOne = echarts.init(document.getElementById('echarts-pie-one'), 'walden');
+        var echartsPieTwo = echarts.init(document.getElementById('echarts-pie-two'), 'walden');
+        var optionPieOne = {
+            title: {
+                text: '药品',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            legend: {
+                orient: 'vertical',
+                left: 'left',
+                data: ['医保药物', '非医保药物']
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    roseType: 'radius',
+                    data: [
+                        {value: medicineInventory[1], name: '医保药物'},
+                        {value: medicineInventory[2], name: '非医保药物'},
+                    ],
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+
+        var optionPieTwo = {
+            title: {
+                text: '科室',
+                left: 'center'
+            },
+            tooltip: {
+                trigger: 'item',
+                formatter: '{a} <br/>{b} : {c} ({d}%)'
+            },
+            series: [
+                {
+                    name: '访问来源',
+                    type: 'pie',
+                    radius: '55%',
+                    center: ['50%', '60%'],
+                    roseType: 'radius',
+                    data: patientWard,
+                    emphasis: {
+                        itemStyle: {
+                            shadowBlur: 10,
+                            shadowOffsetX: 0,
+                            shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        }
+                    }
+                }
+            ]
+        };
+        echartsPieOne.setOption(optionPieOne);
+        echartsPieTwo.setOption(optionPieTwo);
+    });
+</script>
+</body>
+</html>
